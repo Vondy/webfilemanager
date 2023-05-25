@@ -7,11 +7,11 @@
  * @name       datei: wfm_favorits_tool.php
  * @abstract   siehe oben
  * @author     Ralf von der Mark <ralf@website-vdm.de>
- * @copyright  Copyright (c) 2017, Ralf von der Mark, www.WebSite-vdM.de
+ * @copyright  2023, Ralf von der Mark, www.WebSite-vdM.de
  * @version    siehe 'FAVO_TOOL_VERS' und 'FAVO_TOOL_DATE'!
  */
-define('FAVO_TOOL_VERS', '1.7');
-define('FAVO_TOOL_DATE', 'Apr. 2017');
+define('FAVO_TOOL_VERS', '1.8');
+define('FAVO_TOOL_DATE', '01.03.2023');
 define('FAVO_TOOL_LABEL_MAX_LEN', 50);
 define('FAVO_TOOL_LABEL_MITTL_TXT', ' . . . ');
 
@@ -135,7 +135,7 @@ function favo_sichern()
     foreach ($_POST['aktiv'] as $ein_key => $ein_postie) {
         $wert_sammlg .= trim($_POST['pfad'][$ein_key]);
         $wert_sammlg .= '###';
-        if ($_POST['stdd'] == $ein_key) {
+        if (!empty($_POST['stdd']) && $_POST['stdd'] == $ein_key) {
             $wert_sammlg .= '[GO]';
         }//ENDE: if()
         $titel = trim(stripcslashes($_POST['titel'][$ein_key]));

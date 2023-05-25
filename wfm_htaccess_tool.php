@@ -9,7 +9,7 @@
  * @name       wfm_htaccess_tool.php (Add-On zum WebFileManager - WFM |
  * @abstract   siehe oben                                             |
  * @author     Ralf von der Mark <ralf@website-vdm.de>, Germany       |
- * @copyright  Copyright (c) 2011, Ralf von der Mark, www.WebSite-vdM.de
+ * @copyright  2023, Ralf von der Mark, www.WebSite-vdM.de
  * @version    siehe 'PWD_TOOL_VERS' und 'PWD_TOOL_DATE'!
  *                                                                    |
  * -------------------------------------------------------------------|
@@ -29,7 +29,7 @@
  * ------------------------------------------------------------------*/
 
 define('PWD_TOOL_VERS', '1.3.6');
-define('PWD_TOOL_DATE', 'Nov. 2011');
+define('PWD_TOOL_DATE', '02.03.2023');
 
 if (!empty($_GET['accss'])) {
     $accssPfadArr = explode('/', trim($_GET['accss']));
@@ -122,7 +122,7 @@ if (!empty($_SESSION['wfm']['accss'])) {
                 $text .= substr($bin, 0, min(16, $i));
             }
             for ($i = $len; $i > 0; $i >>= 1) {
-                $text .= ($i & 1) ? chr(0) : $passwort{0};
+                $text .= ($i & 1) ? chr(0) : $passwort[0];
             }
             $bin = pack('H32', md5($text));
             for ($i = 0; $i < 1000; $i++) {

@@ -1,13 +1,13 @@
 <?php
 /** ------------------------------------------------------------------|
- *   Applikation: WebFileManager - WFM (Version 6.3.6 vom 22.06.2019) |
+ *   Applikation: WebFileManager - WFM (Version 6.4.1 vom 28.02.2023) |
  * -------------------------------------------------------------------|
- *    Programmiert von Ralf von der Mark, (c) 2006 - 2019             |
+ *    Programmiert von Ralf von der Mark, (c) 2006 - 2023             |
  *     Ein Service des Teams der www.Website-vdM.de                   |
  * ___________________________________________________________________|
  *                                                                    |
  * @author     Ralf von der Mark <ralf@website-vdm.de>                |
- * @copyright  (c) 2019, Ralf von der Mark, Germany, WebSite-vdM.de   |
+ * @copyright  (c) 2023, Ralf von der Mark, Germany, WebSite-vdM.de   |
  *                                                                    |
  * This program is free software;                                     |
  * you can redistribute it and/or modify it under the terms of the GNU|
@@ -29,15 +29,22 @@
  *          schreiben (ehem. "$eigen_aufruf")|
  *  Z. B.: define('AUFRUF_VOM_WOANDERS', 'aufrufende_seite.php'); */
 
-
+ 
 /* ##################################################################
  * Ab hier besser nichts mehr veraendern! Seien Sie vorsichtig!  ####
  * ############################################################### */
+/* START: Error-Ausgabe (nur zur Entwicklung und Debugging!)  */
+  error_reporting(E_ALL | E_STRICT);
+  ini_set('error_reporting', E_ALL | E_STRICT);
+  ini_set('display_errors', 'On');
+  ini_set('display_startup_errors', 1);
+/* ENDE: Error-Ausgabe!  */
+
 define('WO_LIEGT_WFM', wo_liegt_wfm());
-/** @var Beschreibbares Verzeichnis, in dem auch die Tools liegen müssen! */
+/** @var string (Beschreibbares Verzeichnis, in dem auch die Tools liegen müssen!) */
 define('SPEICHER_FUER_WFM', WO_LIEGT_WFM);
-define('VERSION', '6.3.6');
-define('VERS_DATE', '22.06.2019');
+define('VERSION', '6.4.1');
+define('VERS_DATE', '28.02.2023');
 define('USER_DATEI', 'wfm_all_user.php');
 define('SETTINGS_DATEI', 'wfm_settings.php');
 /** Temp-Speicher der Window-Laufwerke */
@@ -51,11 +58,12 @@ define('SPRACH_NAME', base64_encode(AAA_SPRACHE));
 /*ENDE: Sprach-Konstanten/Steuerung */
 
 session_start();
+
 if (!empty($_GET['dev'])) {
-    $_SESSION['wfm']['devMode'] = ($_GET['dev'] == 1 ? 1 : NULL);
+    $_SESSION['wfm']['devMode'] = ($_GET['dev'] == 1 ? 1 : '');
 }
 if (!empty($_SESSION['wfm']['devMode'])) {
-    ini_set('display_errors', 'On'); ini_set('error_reporting', -1); error_reporting(-1);
+    ini_set('display_errors', 'On'); ini_set('error_reporting', E_ALL); error_reporting(E_ALL);
     define('DEV_MODE', 1);
 } else {
     ini_set('display_errors', 'Off'); ini_set('error_reporting', 0); error_reporting(0);
@@ -177,8 +185,8 @@ define('KAFFEE_AUSGEBN_203x17',
        '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');
 
 define('FAVICON_ICO_16x16',
-       'R0lGODlhEAAQAPcAAAAAAP///7CvsLKytbGxs97e37m5ugA6twA5tgA3tQA2tAA4tAA4sxZKuRlMugA9uwA+uwA+ugA/ugA9uAA8tgA+tgA6tAFAuQtEt1h/zPf4+vb3+cnKzMTFxwBAugBBugBCugBDugBEugxJug5LuhJMuiJZuCNauSxhwypeuDRnxTdmuDlnuER1ylF+zEpxt0pyt01zt1qCzGOJz2SJz1l5s11+t118s2B/tmaDtoel2ZSq0K7B45iitObr9ABGugBHuh1Wtx9ZuCRcuSVcuSpfuElyt051t1+AtmGCtmODtm+QyGiFtoCf0Imn2ZWw3XqQtJq14H6Ss5+34JaqyrTH5rXI5pOiurrL6JSgtODn8uHo8+Pp8+jt9ZCkw6nA4+Lp8+zw9vn7/vj6/fHz9u/x9Onu9Oft9Pj7/vn7/fj6/Pf5+/b4+vX3+fP19/L09uzu8ODi5NTW2M/R0/f4+ePk5dDR0sjJysTFxru8ve7z9/D09/f6/PP2+O/y9Pr8/fX3+PDy8+Di4+ns7fj6+uvt7bGzs/r7++vs7L6/v7y9vbm6urKzs62urvv8+7O0s/v79////P///f7+/P///rq6ubOzsq+vrq6urePh27y4sMjEvMK+try5s7q3seDd1/Py8Lu3sLm1rry4scC7s7u2rru4s8S9s8a+s7u2r7q1rrm2s7e1s7q5uLa0tLKxsfv7+7W1tbOzs7KysrGxsbCwsP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAALYALAAAAAAQABAAAAj/AMNsibShzZo0YsSkWdOmTSQwXbA0+ELpTxlBcuTE8fOHkhUHPAjNWPDkUysBly4JqJQpigUZGg4BUpGghidWsmSx8nQDAYo9jhxSqSDhhatVq1jFkEBhB6U2aeq8MgFCwgoChlhEABFkQCE1au6UOuIBiIcURcp6MCLKDho3eTQpKQsEBAggZpOk6rDmzaJRSOjixetBLx6GiULB+CACxI8fIER8MKLqjpo0di4NeXCCSQgPNohAENKowEJQVy6MyIIqB45TPUhM8AKJDRtJLhRAISXLVKdHpKQwaDGJjqQqB5ZwukTL0qxamDY1UTBF0pkSGSgh4mCAUSxFcwJRFqKBQYsPHWZg8RlDZhCcPgsP6XHCJSAAOw==');
-
+       'R0lGODlhEAAQAPcAAAAAAP///7CvsLKytbGxs97e37m5ugA6twA5tgA3tQA2tAA4tAA4sxZKuRlMugA9uwA+uwA+ugA/ugA9uAA8tgA+tgA6tAFAuQtEt1h/zPf4+vb3+cnKzMTFxwBAugBBugBCugBDugBEugxJug5LuhJMuiJZuCNauSxhwypeuDRnxTdmuDlnuER1ylF+zEpxt0pyt01zt1qCzGOJz2SJz1l5s11+t118s2B/tmaDtoel2ZSq0K7B45iitObr9ABGugBHuh1Wtx9ZuCRcuSVcuSpfuElyt051t1+AtmGCtmODtm+QyGiFtoCf0Imn2ZWw3XqQtJq14H6Ss5+34JaqyrTH5rXI5pOiurrL6JSgtODn8uHo8+Pp8+jt9ZCkw6nA4+Lp8+zw9vn7/vj6/fHz9u/x9Onu9Oft9Pj7/vn7/fj6/Pf5+/b4+vX3+fP19/L09uzu8ODi5NTW2M/R0/f4+ePk5dDR0sjJysTFxru8ve7z9/D09/f6/PP2+O/y9Pr8/fX3+PDy8+Di4+ns7fj6+uvt7bGzs/r7++vs7L6/v7y9vbm6urKzs62urvv8+7O0s/v79////P///f7+/P///rq6ubOzsq+vrq6urePh27y4sMjEvMK+try5s7q3seDd1/Py8Lu3sLm1rry4scC7s7u2rru4s8S9s8a+s7u2r7q1rrm2s7e1s7q5uLa0tLKxsfv7+7W1tbOzs7KysrGxsbCwsP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAALYALAAAAAAQABAAAAj/AMNsibShzZo0YsSkWdOmTSQwXbA0+ELpTxlBcuTE8fOHkhUHPAjNWPDkUysBly4JqJQpigUZGg4BUpGghidWsmSx8nQDAYo9jhxSqSDhhatVq1jFkEBhB6U2aeq8MgFCwgoChlhEABFkQCE1au6UOuIBiIcURcp6MCLKDho3eTQpKQsEBAggZpOk6rDmzaJRSOjixetBLx6GiULB+CACxI8fIER8MKLqjpo0di4NeXCCSQgPNohAENKowEJQVy6MyIIqB45TPUhM8AKJDRtJLhRAISXLVKdHpKQwaDGJjqQqB5ZwukTL0qxamDY1UTBF0pkSGSgh4mCAUSxFcwJRFqKBQYsPHWZg8RlDZhCcPgsP6XHCJSAAOw==');                
+                 
 $zeichensatz_array = iconv_get_encoding();/*Zeichensatz-Konvertierung */
 if (!empty($zeichensatz_array['internal_encoding'])) {
     $akt_charset = $zeichensatz_array['internal_encoding'];
@@ -256,9 +264,9 @@ if (!empty($_REQUEST['abbr'])) {
     $_SESSION['wfm']['search'] = array();
     $_SESSION['wfm']['such_res'] = array();
     $_SESSION['wfm']['rename'] = array();
-    $_SESSION['wfm']['accss'] = NULL;
+    $_SESSION['wfm']['accss'] = '';
 }
-$GLOBALS['meldSlg'] = NULL;/* Sammelt die Meldg ueber Tabelle */
+$GLOBALS['meldSlg'] = '';/* Sammelt die Meldg ueber Tabelle */
 /** START: Grundliegende Einstellungen und Variablen */
 define('NAME_ANWDG', 'WebFileManager');
 define('NAME_ANWD_K', 'WFM');
@@ -281,7 +289,7 @@ define('JAHR', date('Y'));
 define('AUTR', 'UmFsZiB2b24gZGVyIE1hcms=');/*AUTR=Vm9uZHk= */
 define('A_MAIL', 'cmFsZkB3ZWJzaXRlLXZkbS5kZQ===');
 define('A_WEB', 'V2ViU2l0ZS12ZE0uZGU=');
-define('A_SHOP_WFM', 'aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbQ==');
+define('A_SHOP_WFM', 'aHR0cHM6Ly9kb3dubG9hZC53ZWJzaXRlLXZkbS5kZS9pbmRleC5waHA=');
 define('A_W_WFM', 'd2ViZmlsZW1hbmFnZXIuV2ViU2l0ZS12ZE0uZGU==');
 define('HELP_URL', 'https://'.base64_decode(A_W_WFM).'/webfilemanager/handbuch.php');
 define('LINK_FACEBOOK', 'https://'.base64_decode(A_W_WFM).'/fb.php?a='.urlencode(base64_encode(VERSION)));
@@ -290,16 +298,14 @@ if (!defined('AUFRUF_VOM_WOANDERS')) {
     define('SELF_NAME', dateiNameFiltrn($_SERVER['PHP_SELF']));
 } else {
     define('SELF_NAME', AUFRUF_VOM_WOANDERS);
-    echo txtMarkg(L_ACHTG.HINWS_FEHLR_INKLUDR, 'hinweis2', null, 'h1').'<hr>';
+    echo txtMarkg(L_ACHTG.HINWS_FEHLR_INKLUDR, 'hinweis2', '', 'h1').'<hr>';
 }
 
-if (!empty($_GET['create']) && $_GET['create'] == 'file') {
+if (!empty($_GET['create']) && $_GET['create'] === 'file') {
     $neuName = createFile();
-    if (file_exists($neuName)) {
+    if (file_exists($_SESSION['wfm']['v_pfad'].'/'.$neuName)) {
         header('location: '.SELF_NAME.'?rename='.urlencode($neuName));
-    } else {
-        $meldg = 'Datei konnte nicht erstellt werden!';
-    }
+    } else { $meldg = 'File not found!'; }
 }
 if (defined('DEV_MODE')) {
     $devModeTxt = L_DEV_MODE_AUS;
@@ -317,18 +323,18 @@ if (!empty($_GET['umbenennen']) && $_GET['umbenennen'] == 'end') {
 
 $lw_box = '';
 /*Windows, Mac o. Linux? */
-if (strtoupper(substr(PHP_OS, 0, 3) == 'WIN')) {
+if (strtoupper(mb_substr(PHP_OS, 0, 3) == 'WIN')) {
     if (!empty($_GET['verzns'])) {
         if ($_GET['verzns'] != 'RELOAD') {
             if (strpos($_GET['verzns'], '\\')) {
                 /*Windows-Verzeichnispfad replace backslashes */
                 header('location: '.SELF_NAME.'?verzns='.urlencode(str_replace('\\', '/', $_GET['verzns'])));
             }
-            if (substr($_GET['verzns'], 0, 1) == '/') {
+            if (mb_substr($_GET['verzns'], 0, 1) == '/') {
                 /*Bei Windows bringt der "/" vorm Laufwerksbuchstaben einen Fehler */
-                $_GET['verzns'] = substr($_GET['verzns'], 1);
+                $_GET['verzns'] = mb_substr($_GET['verzns'], 1);
             }
-            $reload = NULL;
+            $reload = '';
         } else {
             define('LW_RELOAD', $_GET['verzns']);
             unset($_GET['verzns']);
@@ -337,17 +343,17 @@ if (strtoupper(substr(PHP_OS, 0, 3) == 'WIN')) {
     /** Laufwerks-Auswahlbox unter Windows */
     function lw_box($lw)
     {
-        $lw_a = strtoupper(substr($lw, 0, 1));
+        $lw_a = strtoupper(mb_substr($lw, 0, 1));
         return '<optgroup label="'.L_LW_WECHSLN.'">'
             .win_lw($lw_a).'</optgroup>';
     }
-} elseif (strtoupper(substr(PHP_OS, 0, 3) == 'MAC')) {
+} elseif (strtoupper(mb_substr(PHP_OS, 0, 3) == 'MAC')) {
     function lw_box($lw) {}
 } else {
     function lw_box($lw) {}
     define('OS_SYSTEM', 'unix');
-    setSessionFromRequest('rechte', array(), array('anzeigen', 'ausblenden'));
-    if (!empty($_SESSION['wfm']['rechte']) && $_SESSION['wfm']['rechte'] == 'anzeigen') {
+    setSessionFromRequest('rechte', 'ausblenden', ['anzeigen']);
+    if (!empty($_SESSION['wfm']['rechte']) && $_SESSION['wfm']['rechte'] === 'anzeigen') {
         define('R_OWNER_SP', 1);/*RechteOwnerGroup-Spalte einblenden! */
         define('R_OWNER_WFM', '<span style="font-size:1em;color:'.CLR_HINTGR_HINW.';background-color:'.CLR_HINWS.';" title="PHP: get_current_user()">'
                             .DREI_GROESSR.' '.L_OWNER_WFM.': "'.get_current_user().'"</span>'.PHP_EOL);
@@ -377,7 +383,7 @@ function win_lw($lw)
     foreach ($samlg as $val) {
         $opt .= selBox_opt(($val != $lw ? $val.':/' : '#'), $val.':/ ...', 0).PHP_EOL;
     }
-    $opt .= selBox_opt('RELOAD', L_LW_READ_NEW, 0, ' style="font-weight: bold;"').PHP_EOL.selBox_opt('#', NULL);
+    $opt .= selBox_opt('RELOAD', L_LW_READ_NEW, 0, ' style="font-weight: bold;"').PHP_EOL.selBox_opt('#', '');
     return $opt;
 }/*function win_lw() */
 function verzLesOderBrowsbar($getName, $getWert)
@@ -391,10 +397,10 @@ function verzLesOderBrowsbar($getName, $getWert)
                               .'"<br>'.L_KEINE_RECHTE.'');
             $wert = (!empty($_SESSION['wfm']['v_pfad']) ? $_SESSION['wfm']['v_pfad'] : WO_LIEGT_WFM);
         } else {
-            $meldg = NULL;
+            $meldg = '';
             $wert = $getWert;
             if (!defined('MELDG_AKTION')) {
-                define('MELDG_AKTION', L_ORDNER.': *'.substr(strrchr($wert, '/'), 1).'*');
+                define('MELDG_AKTION', L_ORDNER.': *'.mb_substr(strrchr($wert, '/'), 1).'*');
             }
         }
     }
@@ -404,8 +410,8 @@ function verzLesOderBrowsbar($getName, $getWert)
 if (!empty($_GET['verzns'])) {
     $rueckg = verzLesOderBrowsbar('verzns', $_GET['verzns']);
     $_GET['verzns'] = $rueckg[1]; $meldg = $rueckg[0];
-} elseif (!empty($_GET['favos']) && substr($_GET['favos'], 0, 3) == 'wfm' && $vor = substr($_GET['favos'], 0, 4)) {
-    $rueckg = verzLesOderBrowsbar('favos', substr($_GET['favos'], 4));
+} elseif (!empty($_GET['favos']) && mb_substr($_GET['favos'], 0, 3) === 'wfm' && $vor = mb_substr($_GET['favos'], 0, 4)) {
+    $rueckg = verzLesOderBrowsbar('favos', mb_substr($_GET['favos'], 4));
     $_GET['favos'] = $vor.$rueckg[1]; $meldg = $rueckg[0];
 }
 /*Falls das Favoriten-Tool gibt, dann setzen! */
@@ -475,10 +481,9 @@ function getIcon($name = 'space'){
             /* ehem. '_vdM_wfm_nadel_fest.png' */ 'alt' => L_KOPF_LOESN,
             'unicode' => array('size' => '1.5', 'number' => '128205')
         ),
-        'kopf_los' => array(
-            /* ehem. '_vdM_wfm_nadel_los.png' */ 'alt' => L_KOPF_FIX,
-            'unicode' => array('size' => '1.4', 'number' => '128204')/*besseres suchen 128879*/
-        ),
+        'kopf_los' => [/* ehem. '_vdM_wfm_nadel_los.png' */
+            'alt' => 'L_KOPF_FIX', 'unicode' => ['size' => '1.4', 'number' => '128204']/*besseres suchen 128879*/
+        ],
         'folder_open' => array(
             /* ehem. '_vdM_wfm_open_folder.png' */ 'alt' => L_ORDNR_OEFFN,
             'unicode' => array('size' => '1.4', 'number' => '128194')
@@ -526,6 +531,7 @@ function getIcon($name = 'space'){
     );
     return $img[$name];
 }/*function getIcon() */
+
 /* ENDE: Grundliegende Einstellungen und Variablen */
 define('RAND', rand(11, 99));/*Zufaelliger Parameter um den BrowserCache zu umgehen. */
 define('SELF_LINK', SELF_NAME.'?a='.RAND);/*Zufaelliger Parameter um den Cache zu umgehen. */
@@ -563,7 +569,7 @@ if (!empty($_POST['rename']) && !empty($_POST['old_name']) && !empty($_POST['new
     $GLOBALS['meldSlg'] = umbenennen();
 }/*END: RENAME -- Umbenennen einer Datei oder eines Verzeichnises */
 if (!empty($_SESSION['wfm']['accss_tool']) && $_SESSION['wfm']['accss_tool'] != '0') {
-    function acc_link($wie = 'gif', $verz = FALSE) {
+    function acc_link($wie = 'gif', $verz = '') {
         return '<a href="'.SELF_LINK.'&amp;accss='.urlencode($_SESSION['wfm']['v_pfad'].'/'.$verz).'" '
             .'title="'.HTACCESS_SCHUTZ.'" class="img_link">'.(!empty($wie) || $wie == 'gif' ? icon_anz('save') : $wie).'</a>';
     }
@@ -571,7 +577,7 @@ if (!empty($_SESSION['wfm']['accss_tool']) && $_SESSION['wfm']['accss_tool'] != 
     function acc_link() { /* NIX */ }
 }
 /** function favo_datei() Name der Favoriten-Datei */
-function favo_datei($user_wert=FALSE) {
+function favo_datei($user_wert='') {
     if (!empty($user_wert)) {
         return SPEICHER_FUER_WFM.'wfm_favorits_'.$user_wert.'.txt';
     } elseif (!empty($_SESSION['wfm']['user_key'])) {
@@ -582,7 +588,7 @@ function favo_datei($user_wert=FALSE) {
 }/*function favo_datei() */
 
 /** Universeller Formular-Kopf */
-function form_kopf($formname=FALSE, $form_id=FALSE, $enctype=FALSE, $plus_action=FALSE, $method='post', $zusaetzl=NULL)
+function form_kopf($formname='', $form_id='', $enctype='', $plus_action='', $method='post', $zusaetzl='')
 {
     $werte = '';
     if (!empty($formname)){ $werte .= ' name="'.$formname.'"'; }
@@ -637,7 +643,7 @@ function suchFile($v_pfad = '.', $arr_val = array(), $strg = 0)
     if ($verzeichn) {
         while (FALSE !== ($eineDatei = readdir($verzeichn))) {
             if ($eineDatei != '.' && $eineDatei != '..') {
-                $fund = NULL;
+                $fund = '';
                 if (empty($arr_val['case'])) {
                     $fund = stristr($eineDatei, $arr_val['suchwert']);
                 } else {
@@ -666,8 +672,8 @@ function suchResult()
         ksort($_SESSION['wfm']['such_res']);
         $verz_sammlg = ''; $typ_zV = 1; $typ_zD = 1;
         foreach ($_SESSION['wfm']['such_res'] as $schluessel => $fund) {
-            $name = substr($schluessel, 1);
-            if (substr($schluessel, 0, 1) == 'a') {
+            $name = mb_substr($schluessel, 1);
+            if (mb_substr($schluessel, 0, 1) == 'a') {
                 $verz_sammlg .= '<li><strong style="color:'.CLR_ERFOLG.'">'.$typ_zV.'. '.L_ORDNER.':</strong>:
                    <a href="'.SELF_LINK.'&amp;verzns='.urlencode($name).'" title="'.WECHSL_HIERHIN.'">'.$name.'</a>
                    </li>'.PHP_EOL; $typ_zV++;
@@ -676,7 +682,7 @@ function suchResult()
                     .'&amp;verzns='.urlencode(str_replace(dateiNameFiltrn($name), '', $name)).'" title="'.WECHSL_HIERHIN.'">'
                     .str_replace(dateiNameFiltrn($name), '', $name).'</a>'
                     .download_link($fund, $name.'"  style="color:'.CLR_HINWS, $fund)
-                    .(is_binary(substr(strtolower(strrchr($name, '.')), 1)) == TRUE ?
+                    .(is_binary(mb_substr(strtolower(strrchr($name, '.')), 1)) == TRUE ?
                         '' : ' <a href="'.SELF_LINK.'&amp;text_file='.urlencode($name).'">('.L_OEFFN.')</a>')
                     .'</strong></li>'.PHP_EOL; $typ_zD++;
             }
@@ -770,7 +776,7 @@ function ren_speicher_inhalt($settings = '', $dateisammlg = array())
                     .'        base64_decode(\''.base64_encode($schl).'\') => base64_decode(\''.base64_encode($eines).'\'),';
             }
         }
-        $sammler1 = substr($sammler1, 0, -1);
+        $sammler1 = mb_substr($sammler1, 0, -1);
     } elseif (!empty($rename_einstellg) && is_array($rename_einstellg)) {
         foreach ($rename_einstellg as $schl => $eines) {
             if ($schl != 'ren_subm_view') {
@@ -778,7 +784,7 @@ function ren_speicher_inhalt($settings = '', $dateisammlg = array())
                     .'        base64_decode(\''.base64_encode($schl).'\') => base64_decode(\''.base64_encode($eines).'\'),';
             }
         }
-        $sammler1 = substr($sammler1, 0, -1);
+        $sammler1 = mb_substr($sammler1, 0, -1);
     }
     $sammler1 = PHP_EOL.'$rename_einstellg = array('.trim($sammler1).');'.PHP_EOL.PHP_EOL;
     $sammler2 = '  ';
@@ -789,7 +795,7 @@ function ren_speicher_inhalt($settings = '', $dateisammlg = array())
                     .'    base64_decode(\''.base64_encode($eine2).'\') => base64_decode(\''.base64_encode($schl2).'\'),';
             }
         }
-        $sammler2 = substr($sammler2, 0, -1);
+        $sammler2 = mb_substr($sammler2, 0, -1);
     }
     $sammler2 = PHP_EOL.'$rename_sicherg = array('.trim($sammler2).');'.PHP_EOL;
     datei_schreiben(rename_save(), $head.$sammler1.$sammler2.PHP_EOL);
@@ -809,10 +815,10 @@ function ren_rules_glob($x, $counter)
 {
     /*$x: Name mit Pfad */
     $file = dateiNameFiltrn($x);/*nur Name */
-    $arr[1] = substr($x, 0, -strlen($file));/*nur Pfad */
+    $arr[1] = mb_substr($x, 0, -mb_strlen($file));/*nur Pfad */
     $pos_letzt_punkt = strrpos($file, '.');
-    $file_ext = ren_rules_ext(substr($file, $pos_letzt_punkt+1));/*nur Extension */
-    $file_name = ren_rules_name(substr($file, 0, $pos_letzt_punkt), $counter);/*nur  Name */
+    $file_ext = ren_rules_ext(mb_substr($file, $pos_letzt_punkt+1));/*nur Extension */
+    $file_name = ren_rules_name(mb_substr($file, 0, $pos_letzt_punkt), $counter);/*nur  Name */
     /*In Dateinamen sind verboten: < > ? " : | \ / * */
     $verbot = array('<', '>', '?', '"', ':', '\\\\', '\/', '|', '*');
     $arr_verb = implode('|', $verbot);
@@ -896,7 +902,7 @@ function ren_zaehler($counter)
 }/*function ren_zaehler() */
 function ren_vorne_werte_zufg($wert = 1, $stellen = 2, $wert_vorweg = '0')
 {
-    if (($anzahl_nullen = intval($stellen) - strlen($wert)) <= 0) {
+    if (($anzahl_nullen = (int)$stellen - mb_strlen($wert)) <= 0) {
         return $wert;
     } else {
         return str_pad($wert, $stellen, $wert_vorweg, STR_PAD_LEFT);
@@ -919,7 +925,7 @@ function ren_umbn_loop($name_alt, $name_neu) {
     }
     return $arr;
 }/*function ren_umbn_loop() */
-function icon_anz($imgName, $zusatz=FALSE)
+function icon_anz($imgName, $zusatz='')
 {
     if (!empty($_SESSION['wfm']['icons'][$imgName])) {
         return $_SESSION['wfm']['icons'][$imgName];
@@ -928,13 +934,14 @@ function icon_anz($imgName, $zusatz=FALSE)
         $icon = getIcon($imgName);
         if (!empty($icon['unicode']['number'])) {
             return $_SESSION['wfm']['icons'][$imgName] = '<span title="'.$icon['alt']
-                .'" style="font-size: '.$icon['unicode']['size'].'em; text-decoration: none;" '.$zusatz.'>&#'.$icon['unicode']['number'].';</span>';
+                .'" style="font-size: '.$icon['unicode']['size'].'em; text-decoration: none;" '.$zusatz.'
+                >&#'.$icon['unicode']['number'].';</span>';
         } else {
             return '['.$icon['alt'].']';
         }
     }
 }/*function icon_anz() */
-function helpLink($sprungmarke=FALSE, $linkTxt=FALSE, $linkTitel=FALSE, $mitIcon=FALSE, $zusaetzl=NULL)
+function helpLink($sprungmarke='', $linkTxt='', $linkTitel='', $mitIcon='', $zusaetzl='')
 {
     return '<a href="'.HELP_URL.'?lang='.AAA_SPRACH_KUERZL.'&amp;sprungmarke='
         .(!empty($sprungmarke) ? $sprungmarke.'#'.$sprungmarke : 'start_des_handbuchs#start_des_handbuchs')
@@ -999,7 +1006,7 @@ if (!empty($_POST['password']) && !empty($_POST['username'])) {
         && hash('sha512', $_POST['password'], false) == $login_arry[$eingegebUsernameVerschluesselt]) {
         unset($_SESSION['loginversuche']);/*leeren, wenn er das richtigen PW eingibt! */
         $_SESSION['kntrll'] = '';/*Kontrolle zuruecksezten (macht reload unmoeglich!) */
-        $_SESSION['wfm']['user_key'] = substr(str_replace('=', '', strtoupper($eingegebUsernameVerschluesselt)), 0, 10);
+        $_SESSION['wfm']['user_key'] = mb_substr(str_replace('=', '', strtoupper($eingegebUsernameVerschluesselt)), 0, 10);
         $_SESSION['wfm']['user_now'] = $_POST['username'];
         favo_selectbox();/* schreibt das Startverz. */
         $_SESSION['wfm']['v_pfad'] = STANDD_ORT;
@@ -1034,12 +1041,14 @@ if (empty($_SESSION['wfm']['user_now'])) {
         /*Wenn X mal das PW falsch eingegeben, dann weg mit dir! */
         header('location: '.base64_decode(A_SHOP_WFM)); exit();
     }
-    $form_fuer_login = '<br><br>
-        '.form_kopf().'
+    $form_fuer_login = '<div>
+        '.form_kopf('login', 'login', '', '', 'post', ' style="border: 3px outset maroon; padding: 2em;"').'
         <input type="hidden" name="kntrll" value="'.$_POST['kntrll'].'">
-        '.USR_NAME.':&nbsp;<input type="text" name="username" autofocus value="" style="width:22em;" class="bemerkg" placeholder="'.PW_USERN_IHR.'" required><br>
-        &nbsp;'.PW_SELF.':&nbsp;<input type="password" name="password" value="" style="width:22em;" class="bemerkg" placeholder="'.PW_PW_IHR.'" required><br>
-        <input type="submit" name="login" value="Login" style="width:11em;" class="bemerkg"></form><br><br>';
+        <label>'.USR_NAME.':<br><input type="text" name="username" autofocus value="" style="width:22em;" class="bemerkg" placeholder="'.PW_USERN_IHR.'" required></label>
+        <br><br>
+        <label>'.PW_SELF.':<br><input type="password" name="password" value="" style="width:22em;" class="bemerkg" placeholder="'.PW_PW_IHR.'" required></label>
+        <br><br>
+        <input type="submit" name="login" value="Login" style="width: 235px;font-weight: bold;margin-top: 16px;height: 22px;" class="bemerkg"></form><div>';
     if (!empty($log_meldg)) {
         $form_fuer_login .= $log_meldg.$meldg_login_versuche;
     }
@@ -1049,38 +1058,35 @@ if (!empty($_SESSION['wfm']['user_now'])) {
         .'onclick="javascript:return confirm(\''.L_LOGOUT_WIRKL.'\');">'
         .strong($_SESSION['wfm']['user_now'].' ausloggen').'QQQQQ</a>';
 }/* END: Login-Regelung  */
-
-/** setzen von Session-Werten */
-function setSessionFromRequest($key, $default, $arrErlaubt=NULL)
+function setSessionFromRequest($key, $default, $arrErlaubt=[])
 {
-    if (defined('DEV_MODE')) {/* sonst sind die Fehler-Meldungen hinter dem Kopf */
-        $_SESSION['wfm'][$key] = 'absolute';
+    if (defined('DEV_MODE') && $key === 'headPos') {
+        /* sonst sind die Fehler-Meldungen hinter Kopfzeile verborgen */
+        $_SESSION['wfm']['headPos'] = 'absolute';
     } elseif (!empty($_REQUEST[$key])) {
-        if (empty($arrErlaubt) || !is_array($arrErlaubt)) {
+        if (in_array($_REQUEST[$key], $arrErlaubt)) {
             $_SESSION['wfm'][$key] = $_REQUEST[$key];
         } else {
-            if (in_array($_REQUEST[$key], $arrErlaubt)) {
-                $_SESSION['wfm'][$key] = $_REQUEST[$key];
-            } else {
-                $_SESSION['wfm'][$key] = $default;
-            }
+            $_SESSION['wfm'][$key] = $default;
         }
     } elseif (empty($_SESSION['wfm'][$key])) {
         $_SESSION['wfm'][$key] = $default;
-    }
+    }   
 }/*ENDE: function setSession() */
-setSessionFromRequest('sortg', 'name', array('typ', 'size', 'date'));
-setSessionFromRequest('sortaufab', 'ASC', array('DESC'));
+setSessionFromRequest('sortg', 'name', ['typ', 'size', 'date']);
+setSessionFromRequest('sortaufab', 'ASC', ['DESC']);
 
-setSessionFromRequest('headPos', 'fixed', array('absolute'));
-if ($_SESSION['wfm']['headPos'] == 'absolute') {
+setSessionFromRequest('headPos', 'fixed', ['absolute']);
+if (defined('DEV_MODE')) {
+    define('HEAD_POS', ''); define('HEAD_TOP_PLUS', 'margin-top: 1em;');
+    define('HEAD_P_LINK', '<a href="'.SELF_LINK.'&amp;dev=9&amp;headPos=fixed" style="font-weight:bold; color:'.CLR_FEHLER.';">'.L_DEV_MODE_OFF_KRZ.'</a>');
+} elseif ($_SESSION['wfm']['headPos'] === 'absolute') {
     define('HEAD_POS', ''); define('HEAD_TOP_PLUS', 'margin-top: 1em;');
     define('HEAD_P_LINK', '<a href="'.SELF_NAME.'?headPos=fixed" title="'.L_KOPF_SELF.' '.L_KOPF_FIX.'" class="img_link">'.icon_anz('kopf_los').'</a>');
-} else {
+} else{
     define('HEAD_POS', 'position:fixed;'); define('HEAD_TOP_PLUS', 'margin-top: 5em;');
     define('HEAD_P_LINK', '<a href="'.SELF_NAME.'?headPos=absolute" title="'.L_KOPF_SELF.' '.L_KOPF_LOESN.'" class="img_link">'.icon_anz('kopf_fest').'</a>');
 }
-
 /** ACHTUNG: Alle Werte muessen klein geschrieben werden!! */
 function array_ASCII(){
     return array(
@@ -1088,7 +1094,7 @@ function array_ASCII(){
         'htpasswd','inc','ini','java','js','jsp','log','php','php3','php4','phtml','pl','shtm','shtml',
         'sql','src','txt','vb','vbs','vtm','vtml','wml','xml','xsd','xsl');
 }/*function array_ASCII() */
-function getDateityp($wert=FALSE)
+function getDateityp($wert='')
 {
     switch ($wert) {
         case 'dir': /*directory */
@@ -1104,15 +1110,15 @@ function getDateityp($wert=FALSE)
             $dateityp = L_UNBEKANNT;
     }
     return $dateityp;
-}/*Funktion getDateityp($wert=FALSE) */
+}/*Funktion getDateityp($wert='') */
 function is_binary($wert)
 {
     /*wenn nicht ASCII, dann vermutl. Binaerdatei */
     $ascii_zeichen = array_ASCII();
     if (in_array(strtolower($wert), $ascii_zeichen)) {
-        return FALSE;/*Wenn gefunden, dann kein BINARY! */
+        return false;/*Wenn gefunden, dann kein BINARY! */
     } else {
-        return TRUE;
+        return true;
     }
 }/*function is_binary() */
 function binary_anzeig_link($dateiName, $dateiNameUPhad, $linkTitel)
@@ -1121,12 +1127,12 @@ function binary_anzeig_link($dateiName, $dateiNameUPhad, $linkTitel)
                title="Display: '.$dateiName.'">'.$linkTitel.'</a>';
 }/*function binary_anzeig_link() */
 /** link-Erstellung */
-function download_link($dateiName, $dateiNameUPhad, $linkTitel)
+function download_link($dateiName, $dateiNameUPhad, $linkTitel, $cssClass='img_link')
 {
     return '<a href="'.SELF_LINK.'&amp;attachment='.urlencode($dateiNameUPhad).'"
-               title="Download: *'.$dateiName.'*">'.$linkTitel.'</a>';
+               class="'.$cssClass.'" title="Download: *'.$dateiName.'*">'.$linkTitel.'</a>';
 }/*function download_link() */
-function umbenennen_link($verzeichnsInhalt, $link_label, $titelteil, $sprung=NULL)
+function umbenennen_link($verzeichnsInhalt, $link_label, $titelteil, $sprung='')
 {
     return '<a href="'.SELF_LINK.'&amp;rename='.urlencode($verzeichnsInhalt)
         .'#'.urlencode((!empty($sprung) ? $sprung : $verzeichnsInhalt)).'" '
@@ -1148,7 +1154,7 @@ function wo_liegt_wfm()
     $dateiname_pfad = $_SERVER['SCRIPT_FILENAME'];
     $dateiname = dateiNameFiltrn($dateiname_pfad, '/');
     $dateiPfad = str_replace($dateiname, '', $dateiname_pfad);
-    if (substr($dateiPfad, -1) != '/') {
+    if (mb_substr($dateiPfad, -1) != '/') {
         $dateiPfad .= '/';/*immer mit "/" am Ende ausgeben */
     }
     return $dateiPfad;
@@ -1156,7 +1162,8 @@ function wo_liegt_wfm()
 function lesbare_dateigroesse($gr, $stellen)
 {
     /*VORSICHT: intval() funktioniert auf 32Bit-Systeme nur bis 2.147.483.647 */
-    if (!empty($gr) && $gr > 0) {
+    $gr = (float)$gr;
+    if (!empty((float)$gr) && $gr > 0) {
         $name = array('Bytes','KB','MB','GB','TB','PB','EB','ZB','YB');
         $gerundet = round($gr/pow(1024,($i = floor(log($gr, 1024)))), $stellen).' '.$name[$i];
         return '<span title="'.$gr.' Bytes">'.str_replace('.', ',', $gerundet).'</span>';
@@ -1199,14 +1206,14 @@ function dateiUeberschrft($file)
 {
     return txtMarkg('<span title="'.$file.'">'.ABBR_BEGINN.' | '.DATEI_NAME.': '.dateiNameFiltrn($file).'</span>', 'hinweis2');
 }/*ENDE: function */
-function versteck_anzeigen($verstLinkLabel, $verstSelber, $linkTitle=FALSE, $zusaetzl=NULL, $anker='#', $disply=NULL)
+function versteck_anzeigen($verstLinkLabel, $verstSelber, $linkTitle='', $zusaetzl='', $anker='#', $disply='')
 {
     return '<a href="'.$anker.'" onclick="if(window.AufUndZuKlappen)return AufUndZuKlappen(this)" '
         .'title="'.(!empty($linkTitle) ? $linkTitle : L_VERSTCK_DEFAULT)
         .'"'.$zusaetzl.'>'.$verstLinkLabel.'</a>'
         .'<div'.(!empty($disply) ? '' : ' style="display:none;"').'>'.$verstSelber.'</div>'.PHP_EOL;
 }/*function versteck_anzeigen() */
-function upload_link($anzahl, $anzeige=FALSE, $zusLink='')
+function upload_link($anzahl, $anzeige='', $zusLink='')
 {
     return SELF_LINK.'&amp;abbr=1&amp;filefelder='.$anzahl.$zusLink.'#anker_upload">'.(!empty($anzeige) ? $anzeige : $anzahl);
 }/*function upload_link() */
@@ -1225,14 +1232,14 @@ function bildchen_groesse($img)
 }/*function */
 function dateiEndg($name) {
     $pos = strrpos($name, '.');
-    if ($pos >= 1) { return substr($name, $pos + 1); }
+    if ($pos >= 1) { return mb_substr($name, $pos + 1); }
     else { return false; }
 }
-function createFile($nam = L_NEU_DATEI, $inhalt = NULL, $wo = NULL) {
+function createFile($nam = L_NEU_DATEI, $inhalt = '', $wo = '') {
     if (empty($wo)) { $wo = $_SESSION['wfm']['v_pfad']; }
     $endg = trim(dateiEndg($nam));
     if (empty ($endg)) { $endg = '.txt'; $nam = strtolower($nam); }
-    else {$endg = '.'.$endg; $nam = substr($nam, 0, -strlen($endg)); }
+    else {$endg = '.'.$endg; $nam = mb_substr($nam, 0, -mb_strlen($endg)); }
     $n = str_replace(' ', '_', $nam);
     for ($zaehlr = 1; $zaehlr < 222; $zaehlr++) {
         $name = $n.'_'.$zaehlr.$endg;
@@ -1260,19 +1267,19 @@ function datei_schreiben($name, $inhalt)
     fwrite($zeiger, $inhalt);
     fclose($zeiger);
 }
-function text_kuerzen($text, $stellen=50, $trenner='...', $wo='mitte', $kommentr=FALSE)
+function text_kuerzen($text, $stellen=50, $trenner='...', $wo='mitte', $kommentr='')
 {
-    if (strlen($text) > $stellen) {
-        $zeichn = $stellen - strlen($trenner);
+    if (mb_strlen($text) > $stellen) {
+        $zeichn = $stellen - mb_strlen($trenner);
         if (!empty($wo) && $wo == 'vorne') {
-            $laenge = strlen($text) - $zeichn;
-            $text = $trenner.substr($text, $laenge);
+            $laenge = mb_strlen($text) - $zeichn;
+            $text = $trenner.mb_substr($text, $laenge);
         } elseif (!empty($wo) && $wo == 'hinten') {
-            $text = substr($text, 0, $zeichn).$trenner;
+            $text = mb_substr($text, 0, $zeichn).$trenner;
         } else {
             /*Standard: Mitte kuerzen: */
-            $haelfte = intval($zeichn / 2);
-            $text = substr($text, 0, $haelfte).$trenner.substr($text, -$haelfte);
+            $haelfte = (int)($zeichn / 2);
+            $text = mb_substr($text, 0, $haelfte).$trenner.mb_substr($text, -$haelfte);
         }
         $text .= (!empty($kommentr) ? ' ['.L_GEKUERZT.']' : '');
     }
@@ -1285,7 +1292,7 @@ function endKey($array)
 }/*function endKey($array) */
 
 /** Funktion Array-Inhalte anzeigen */
-function array_anzeigen($arr_self, $arr_name=FALSE)
+function array_anzeigen($arr_self, $arr_name='')
 {
     $arrName = (!empty($arr_name) ? $arr_name : L_NAME.' '.L_UNBEKANNT);
     if (is_array($arr_self)) {
@@ -1300,11 +1307,17 @@ function array_anzeigen($arr_self, $arr_name=FALSE)
              </tr>'.PHP_EOL; $loop_zaehler = 1;
         foreach($arr_self as $arr_key => $arr_inh)
         {
-            if (is_int($arr_inh)) { $typ = 'integer';$zahl = strlen($arr_inh);
-            } elseif (is_array($arr_inh)) { $typ = 'array'; $zahl = count($arr_inh);
-            } else { $typ = 'string'; $zahl = strlen($arr_inh); }
-            if (is_string($arr_inh)) { $arr_inh = htmlentities($arr_inh);
-            } elseif (is_array($arr_inh)) { $arr_inh = array_anzeigen($arr_inh, $arr_key); }
+            if (is_int($arr_inh)) { 
+                $typ = 'integer'; $zahl = (int)(!empty($arr_inh) ? mb_strlen($arr_inh) : 0);
+            } elseif (is_array($arr_inh)) { 
+                $typ = 'array'; $zahl = (int)(!empty($arr_inh) ? count($arr_inh) : 0);
+            } else { 
+                $typ = 'string'; $zahl = (int)(!empty($arr_inh) ? mb_strlen($arr_inh) : 0); }
+            if (is_string($arr_inh)) {
+                $arr_inh = htmlentities($arr_inh);
+            } elseif (is_array($arr_inh)) { 
+                $arr_inh = array_anzeigen($arr_inh, $arr_key); 
+            }
             $echos .= '
                 <tr>
                     <td style="vertical-align: top; white-space: nowrap;">'.$loop_zaehler.'./'.$summe.'</td>
@@ -1321,11 +1334,11 @@ function array_anzeigen($arr_self, $arr_name=FALSE)
     return $echos.'<hr>';
 }/*function array_anzeigen() */
 /** Setzen diverser Header-Informationen fuer den Browser */
-function header_setzen($get_array=FALSE)
+function header_setzen($get_array='')
 {
     if (empty($_SESSION['wfm']['user_key']) && !empty($get_array)) {
         /*Stoppt den Download-Link, wenn nicht angemeldet! */
-        exit('LogIn?');
+        header('location: '.base64_decode(A_SHOP_WFM)); exit();
     }
     if (!empty($get_array)) {
         if (!empty($get_array['imgDisply']) && defined('IMGFILE_GET')) {
@@ -1353,7 +1366,7 @@ function bildLeiste($href, $linkzusatz, $bild, $bild_name, $bild_info)
     $samlg = txtMarkg($samlg, 'erfolge');
     return $samlg.PHP_EOL;
 }/*function bildLeiste() */
-function selBox_opt($value='#', $label='&nbsp;', $sel=FALSE, $style=FALSE)
+function selBox_opt($value='#', $label='&nbsp;', $sel='', $style='')
 {
     if (!empty($sel)) { $sel = ' selected="selected"'; }
     return '<option value="'.$value.'"'.$sel.$style.'>'.$label.'</option>
@@ -1391,16 +1404,16 @@ function favo_selectbox()
         <optgroup label="'.L_FAVORIT.' '.  strtolower(L_AUSWAEHLN).' '.DREI_KLEINR.DREI_KLEINR.'">';
         foreach ($arr_favoinhalt as $einFavo) {
             $einFavo = trim($einFavo);
-            if (!empty($einFavo) && substr($einFavo, 0, 7) != 'HINWEIS' && substr($einFavo, 0, strlen(SCHREIBWEISE)) != SCHREIBWEISE) {
+            if (!empty($einFavo) && mb_substr($einFavo, 0, 7) != 'HINWEIS' && mb_substr($einFavo, 0, mb_strlen(SCHREIBWEISE)) != SCHREIBWEISE) {
                 $getrennt = explode('###', $einFavo); $pfad = trim($getrennt[0]);
                 $lable = (!empty($getrennt[1])? trim($getrennt[1]) : $pfad);
                 $lable = (!empty($lable)? $lable : $pfad);
-                if (!defined('STANDD_ORT') && substr($lable, 0, 4) == '[GO]') {
+                if (!defined('STANDD_ORT') && mb_substr($lable, 0, 4) == '[GO]') {
                     $verzMeldg = verzLesOderBrowsbar('verzns', $pfad);
                     if (empty($verzMeldg[0])) {
-                        $lable = substr($lable, 4).' ['.L_HOME.']'; define('STANDD_ORT', $pfad);
+                        $lable = mb_substr($lable, 4).' ['.L_HOME.']'; define('STANDD_ORT', $pfad);
                     } else {
-                        $lable = substr($lable, 4).' ['.L_HOME.'] (defekt)'; define('STANDD_ORT', $verzMeldg[1]);
+                        $lable = mb_substr($lable, 4).' ['.L_HOME.'] (defekt)'; define('STANDD_ORT', $verzMeldg[1]);
                     }
                 }
                 if ((!empty($_GET['verzns']) && $pfad == $_GET['verzns']) || (empty($_GET['verzns']) && !empty($_SESSION['wfm']['v_pfad'])
@@ -1442,7 +1455,7 @@ function favo_speichern()
         $lable = (!empty($getrennt[1])? trim($getrennt[1]) : $feld1);
         $lable = (!empty($lable)? $lable : $feld1);
         if (!empty($feld1) && !array_key_exists($feld1, $arr_new)
-            && substr($feld1, 0, 7) != 'HINWEIS' && substr($feld1, 0, strlen(SCHREIBWEISE)) != SCHREIBWEISE) {
+            && mb_substr($feld1, 0, 7) != 'HINWEIS' && mb_substr($feld1, 0, mb_strlen(SCHREIBWEISE)) != SCHREIBWEISE) {
             $arr_new[$feld1] = trim($feld1).'###'.text_kuerzen($lable, 50, '...').PHP_EOL;
         }
     }/*foreach */
@@ -1480,12 +1493,12 @@ function favo_steuerg($wert_favos){
                     $meldg = txtMarkg(L_FAVORTS.' - '.DATEI_GELOESCHT.'! '.VIER_LEER_X_2.$link_handb, 'hinweis2');
                 } break;
             default:
-                if (substr($wert_favos, 0, 3) == 'wfm') {
-                    if (substr($wert_favos, 0, 4) == 'wfm1') {
+                if (mb_substr($wert_favos, 0, 3) == 'wfm') {
+                    if (mb_substr($wert_favos, 0, 4) == 'wfm1') {
                         $meldg = txtMarkg(L_HINWS.L_FAVO_SPRG_OK.' '.L_FAVORIT.' '.VIER_LEER_X_2.$link_handb);
-                    } elseif (substr($wert_favos, 0, 4) == 'wfm9') {
+                    } elseif (mb_substr($wert_favos, 0, 4) == 'wfm9') {
                         $meldg = txtMarkg(L_HINWS.L_FAVO_SPRG_OK.' '.L_FAVO_HOME.' '.VIER_LEER_X_2.$link_handb);
-                    } $_GET['verzns'] = substr($wert_favos, 4);
+                    } $_GET['verzns'] = mb_substr($wert_favos, 4);
                 } break;
         }
     }/*if (!empty($_SESSION['wfm']['... */
@@ -1496,8 +1509,8 @@ if (empty($_SESSION['wfm']['v_pfad'])
     $_SESSION['wfm']['v_pfad'] = WO_LIEGT_WFM;
 } elseif (!empty($_GET['verzns'])) {
     if (!empty($_ENV['OS']) && stristr($_ENV['OS'], 'WINDOWS')
-        && substr($_GET['verzns'], 0, 1) == '/') {
-        $_GET['verzns'] = ($_GET['verzns'] == '/' ? WO_LIEGT_WFM : substr($_GET['verzns'], 1));
+        && mb_substr($_GET['verzns'], 0, 1) == '/') {
+        $_GET['verzns'] = ($_GET['verzns'] == '/' ? WO_LIEGT_WFM : mb_substr($_GET['verzns'], 1));
     }
     $_SESSION['wfm']['v_pfad'] = $_GET['verzns'];
 }/*if(empty($_SESSION['wfm']['v_pfad'])) */
@@ -1534,7 +1547,7 @@ if (!empty($_GET['del_zip'])) {
     if (is_file($_GET['entZippn'])) {
         $zip = new ZipArchive;
         if ($zip->open($_GET['entZippn']) === TRUE) {
-            $zip->extractTo($_SESSION['wfm']['v_pfad'].'/'.str_replace('.'.dateiEndg($zipDateiName), null, $zipDateiName));
+            $zip->extractTo($_SESSION['wfm']['v_pfad'].'/'.str_replace('.'.dateiEndg($zipDateiName), '', $zipDateiName));
             $zip->close();
             $GLOBALS['meldSlg'] .= txtMarkg(L_ERFOLGRCH.str_replace(':', ' "'.$zipDateiName.'"', ZIP_ENTPCKN_OK), 'erfolge');
         } else {
@@ -1545,7 +1558,7 @@ if (!empty($_GET['del_zip'])) {
     }
     /*exit('<br>entZippn '.$_GET['entZippn']);*/
 }
-$datei_zip = NULL;
+$datei_zip = '';
 if (!empty($_POST['select_action']) && $_POST['select_action'] == 'file_zippen' && !empty($_POST['files'])) {
     if (class_exists('ZipArchive')) {/* funktioniert ab PHP-Vers 5.2 */
         $zip = new ZipArchive;
@@ -1580,8 +1593,7 @@ if (file_exists(SPEICHER_FUER_WFM.ZIP_NAME)) {
     $GLOBALS['meldSlg'] .= txtMarkg($zip_meldg, 'erfolge', 'title="ZipFile-Manager"').'<hr>';
 }/* ENDE: Haendling der ZIP-Datei (erzeugen, anzeigen, download, loeschen */
 /** Groesse des Verzeichnisses inkl. Unterverz. */
-function verz_groesse_lesen($v_pfad='.')
-{
+function verz_groesse_lesen($v_pfad='.') {
     $zaehler = 0; $result[$v_pfad] = 0; $verzeichn = opendir($v_pfad);
     if ($verzeichn) {
         while (FALSE !== ($eineDatei = readdir($verzeichn))) {
@@ -1589,7 +1601,7 @@ function verz_groesse_lesen($v_pfad='.')
                 $verz_name = $v_pfad.'/'.$eineDatei;
                 if (is_dir($verz_name)) {
                     $arr_verz = verz_groesse_lesen($verz_name);
-                    while (list($key, $value) = each ($arr_verz)) {
+                    foreach($arr_verz as $key => $value) {
                         $zaehler++; $result[$key] = $value;/*gefunden */
                     }
                 } else {
@@ -1702,7 +1714,7 @@ function rechte_owner($wert)
 function rechte_group($wert)
 {
     if (function_exists('posix_getgrgid')) {
-        $arr = @posix_getgrgid($wert);
+        $arr = @posix_getgrgid((int)$wert);
     } else {
         $arr = array('name' => L_UNBEKANNT);
     }
@@ -1714,7 +1726,7 @@ function rechte_group($wert)
         foreach ($arr['members'] as $einz) {
             $mitgl .= $einz.', ';
         }
-        $mitgl = substr($mitgl, 0, -2);
+        $mitgl = mb_substr($mitgl, 0, -2);
     } else {
         $mitgl .= $arr['members'];
     }
@@ -1722,9 +1734,9 @@ function rechte_group($wert)
 }
 function rechte_txt2num($wert)
 {
-    $zahl  = (substr($wert, 0, 1) == '-' ? 0 : 4);
-    $zahl += (substr($wert, 1, 1) == '-' ? 0 : 2);
-    $zahl += (substr($wert, 2, 1) == '-' ? 0 : 1);
+    $zahl  = (mb_substr($wert, 0, 1) == '-' ? 0 : 4);
+    $zahl += (mb_substr($wert, 1, 1) == '-' ? 0 : 2);
+    $zahl += (mb_substr($wert, 2, 1) == '-' ? 0 : 1);
     return $zahl;
 }
 function rechte_anz($datei) {
@@ -1770,7 +1782,7 @@ function verz_vorbereit($val)
     $val = trim($val); $val = str_replace(' ', '/', $val);
     if (strpos($val, '/') == true) {
         $arr = explode('/', $val);
-        $meldg  = ''; $sammlg = null;
+        $meldg  = ''; $sammlg = '';
         foreach ($arr as $einz) {
             $einz = trim($einz);
             if (!empty($einz)) {
@@ -1873,7 +1885,7 @@ if (!empty($_SESSION['wfm']['temp_memo']) && is_array($_SESSION['wfm']['temp_mem
         }/*if(!empty($mein_erster_inhalt['name'])) */
     }/*foreach($_SESSION['wfm']['temp_memo'] as $mein_erster_inhalt) */
     unset($_SESSION['wfm']['temp_memo']);
-    $GLOBALS['meldSlg'] .= $meldg.'<hr>'.PHP_EOL; $meldg = NULL;
+    $GLOBALS['meldSlg'] .= $meldg.'<hr>'.PHP_EOL; $meldg = '';
 } elseif (!empty($_GET['temp_m_einfg']) && !empty($_SESSION['wfm']['temp_memo'])
     && is_array($_SESSION['wfm']['temp_memo'][$_GET['temp_m_einfg']])) {
     if (copy($_SESSION['wfm']['temp_memo'][$_GET['temp_m_einfg']]['pfad'].'/'.$_SESSION['wfm']['temp_memo'][$_GET['temp_m_einfg']]['name'],
@@ -1890,7 +1902,7 @@ if (!empty($_SESSION['wfm']['temp_memo']) && is_array($_SESSION['wfm']['temp_mem
     } else {
         $meldg = txtMarkg(ERR_ERROR.L_SPEICHR_FEHLR.' ('.$_GET['temp_m_einfg'].')', 'fehler');
     }/*if(copy(source ==> dest)) */
-    $GLOBALS['meldSlg'] .= $meldg.'<hr>'.PHP_EOL; $meldg = NULL;
+    $GLOBALS['meldSlg'] .= $meldg.'<hr>'.PHP_EOL; $meldg = '';
 }/*elseif(!empty($_GET['del_temp_memo'])) */
 /** aktuelles Verzeichnis in ein vorsortiertes Array mit Verzeichnis- u. Datei-Namen packen */
 function verzeichn_auslesen()
@@ -1952,14 +1964,14 @@ function discInfo()
 function aktVerzPfad()
 {
     $pfadRootVerz = ' / ROOT';
-    if(strlen($_SESSION['wfm']['v_pfad']) < 2){
+    if(mb_strlen($_SESSION['wfm']['v_pfad']) < 2){
         $opSelbx = '<option value="0" title="'.L_ORDNR_ROOT.'">'.$pfadRootVerz.'</option>';
         $navig_link_2 = '<strong title="'.L_ORDNR_ROOT.'"> ROOT /</strong>';
         $lw = $pfadRootVerz;
     } else {
         $lw = '';
-        if(substr($_SESSION['wfm']['v_pfad'], strlen($_SESSION['wfm']['v_pfad']) - 1) == '/'){
-            $_SESSION['wfm']['v_pfad'] = substr($_SESSION['wfm']['v_pfad'], 0, strlen($_SESSION['wfm']['v_pfad']) - 1);
+        if(mb_substr($_SESSION['wfm']['v_pfad'], mb_strlen($_SESSION['wfm']['v_pfad']) - 1) == '/'){
+            $_SESSION['wfm']['v_pfad'] = mb_substr($_SESSION['wfm']['v_pfad'], 0, mb_strlen($_SESSION['wfm']['v_pfad']) - 1);
         }
         $pfad_in_link = explode('/', $_SESSION['wfm']['v_pfad']);
         $loppzaehler = 0;
@@ -2029,7 +2041,7 @@ if (empty($_GET['no_list'])) {
 function verzLeiste()
 {
     define('ICON_LEISTE_VERZ', VIER_LEER_X_2.'<a href="'.SELF_LINK.'&amp;ordner=neu&amp;no_list=1&amp;abbr=1" title="'.L_ORDNR_NEU.'..." class="img_link">'
-                             .icon_anz('folder_new').'</a>'.(acc_link() != FALSE ? VIER_LEER_X_2.acc_link() : '').VIER_LEER_X_2.'<a class="img_link" '
+                             .icon_anz('folder_new').'</a>'.(acc_link() != '' ? VIER_LEER_X_2.acc_link() : '').VIER_LEER_X_2.'<a class="img_link" '
                              .(!defined('FAVO_AKTIV') ? 'title="'.L_FAVO_ERSTELLN.'" href="'.SELF_NAME.'?favos=1&amp;abbr=1" onclick="return confirm(\''.L_FAVO_ERSTELLN.'\n\n'.$_SESSION['wfm']['v_pfad'].'\n\n'.L_FRAG_ALLG.'\')">'.icon_anz('anker')
                                  : 'title="'.L_FAVO_FERTIG.'" href="javascript:alert(\''.L_FAVO_FERTIG.'\\n\\n'.$_SESSION['wfm']['v_pfad'].'\');">'.icon_anz('anker_vorh')).'</a>');
 
@@ -2076,9 +2088,9 @@ if (!empty($_POST['newpw01']) && !empty($_POST['newpw02'])
     $passwd_user = $login_arry[$userNow];
     if (hash('sha512', $_POST['oldpw'], false) == $passwd_user) {
         if ($_POST['newpw01'] == $_POST['newpw02']) {
-            if (strlen($_POST['newpw01']) > 5) {
+            if (mb_strlen($_POST['newpw01']) > 5) {
                 if (is_file(USER_DATEI)) {
-                    $userDaten = NULL;
+                    $userDaten = '';
                     foreach ($login_arry as $login_key => $login_wert) {
                         $userDaten .= '\''.$login_key.'\' => \''.(base64_encode($_SESSION['wfm']['user_now']) != $login_key ?
                                 $login_wert :  hash('sha512', $_POST['newpw01'], false)).'\','.PHP_EOL;
@@ -2090,7 +2102,7 @@ if (!empty($_POST['newpw01']) && !empty($_POST['newpw02'])
                 }
             } else {
                 $_GET['pw_aendern'] = 1; $meldg = txtMarkg(ERR_ERROR.PW_HINWEIS, 'fehler');
-            }/*else ==> if (strlen($_POST['newpw01']) > 7) */
+            }/*else ==> if (mb_strlen($_POST['newpw01']) > 7) */
         } else {
             $_GET['pw_aendern'] = 1; $meldg = txtMarkg(ERR_ERROR.PW_KONTROLLE, 'fehler');
         }/*else ==> if() */
@@ -2138,7 +2150,7 @@ if (!empty($_POST['wfm_umbennen']) && !empty($_POST['new_name'])) {
         /*Fuer Dateinamen sind folgende Zeichen nicht erlaubt: < > ? " : | \ / * LEER */
         if (preg_match('/^[a-zA-Z0-9-_+]*\.[a-zA-Z0-9]{3,5}+$/', $neue_name)) {
             rename(WO_LIEGT_WFM.SELF_NAME, WO_LIEGT_WFM.$neue_name);
-            if (@header('location: '.$neue_name.'?neuer=name') == FALSE) {
+            if (@header('location: '.$neue_name.'?neuer=name') == '') {
                 $meldg = txtMarkg('<a href="'.$neue_name.'">'.L_ERFOLGRCH.' '.L_DATEI.' "'.htmlentities($neue_name).'" '.L_UMBENN_GO.'</a>');
             }
         } else {
@@ -2151,7 +2163,7 @@ if (!empty($_GET['neuer']) && $_GET['neuer'] == 'name') {
 }/*ENDE: Umbenennen des WFM-Datei */
 
 /** Markiernung von Hinweis-Texten */
-function txtMarkg($txt, $farbschema = FALSE, $weiteres = FALSE, $typ_h = 'h2')
+function txtMarkg($txt, $farbschema = '', $weiteres = '', $typ_h = 'h2')
 {
     switch ($farbschema) {
         case 'erfolge':
@@ -2165,12 +2177,12 @@ function txtMarkg($txt, $farbschema = FALSE, $weiteres = FALSE, $typ_h = 'h2')
     }
     return PHP_EOL.'<'.$typ_h.' '.$style.$weiteres.'>'.$txt.'</'.$typ_h.'>'.PHP_EOL;
 }/*function txtMarkg() */
-function strong($val, $title=NULL) {
+function strong($val, $title='') {
     return '<strong'.(!empty($title) ? ' title="'.$title.'"' : '').'>&raquo;&nbsp;'.$val.'&nbsp;&laquo;</strong>';
 }
 
 /** HTML-Kopf fuer fast jede Seite */
-function html_begin($log_ok_meldg = '', $kopf_ausblenden = FALSE)
+function html_begin($log_ok_meldg = '', $kopf_ausblenden = '')
 {
     global $meldg;
     $wert_html_begin = '<!DOCTYPE html>
@@ -2203,7 +2215,8 @@ html,body{ color: '.CLR_FONT_ALLG.';
     font-size:0.9em; }
 a{ color: '.CLR_FONT_ALLG.'; background-color:'.CLR_HINTGR_ALLG.'; }
 a:hover{ color:'.CLR_HINTGR_ALLG.'; background-color: '.CLR_FONT_ALLG.'; }
-a.img_link, a.img_link:hover{ color:#000; verical-align: bottom; background:none; }
+a.img_link, a.img_link:hover{ color:#000; background:none; vertical-align: bottom; text-decoration: none; }
+a.text1_link{ color:'.CLR_FONT_2.'; } a.text1_link:hover{ background-color: '.CLR_HINTGR_HINW.'; }
 a.headlink{ background-color: '.CLR_HINTGR_HINW.'; }
 h1{ font-size:1.6em; font-weight:bold;
     margin: 0px; padding: 10px 0px 0px 0px; }
@@ -2327,7 +2340,7 @@ function changeFoldr() {
       </optgroup>'.PHP_EOL.'<optgroup label="'.L_ORDNER.' - '.L_FUNKTN.':">'
                 .selBox_opt(SELF_NAME.'?ordner=neu&amp;no_list=1', L_ORDNR_NEU)
                 .(empty($selectb_favos) ? selBox_opt(SELF_NAME.'?favos=1', L_FAVO_ERSTELLN) : '')
-                .(acc_link() != FALSE ? selBox_opt(SELF_NAME.'?accss='.urlencode($_SESSION['wfm']['v_pfad']), HTACCESS_SCHUTZ) : '')
+                .(acc_link() != '' ? selBox_opt(SELF_NAME.'?accss='.urlencode($_SESSION['wfm']['v_pfad']), HTACCESS_SCHUTZ) : '')
                 .selBox_opt(SELF_NAME.'?direktVerz=1&amp;no_list=1', L_VERZ_DIRKT.' . . .')
                 .selBox_opt().'</optgroup>'.PHP_EOL.'<optgroup label="'.L_VERSCHDNES.':">'
                 .(defined('OS_SYSTEM') && OS_SYSTEM == 'unix' ?
@@ -2349,7 +2362,7 @@ function changeFoldr() {
             .selBox_opt()
             .'</optgroup>'.PHP_EOL.'<optgroup label="'.L_WFM_INTERN.'">'
             .selBox_opt('https://www.'.base64_decode(A_WEB).'/index.php?navi=kontakt&amp;email_betreff=Direkt-Link%20aus%20dem%20'.NAME_ANWDG, L_WFM_INT_MAIL)
-            .selBox_opt('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=1024160', L_WFM_INT_SPEND)
+            .selBox_opt('https://paypal.me/vondy62', L_WFM_INT_SPEND)
             .selBox_opt(LINK_FACEBOOK, L_WFM_INT_FACEB).selBox_opt()
             .'</optgroup>
   </select><input type="hidden" name="a" value="'.RAND.'">  
@@ -2372,26 +2385,25 @@ function changeFoldr() {
   <tr>
       <td style="white-space: nowrap; text-align: left; background-color:'.CLR_HINTGR_HINW.';">
       <a href="'.SELF_LINK.'" title="RELOAD - '.NAME_ANWDG.' ('.NAME_ANWD_K.' '.VERSION.') '.  lcfirst(L_RELOAD).'" class="headlink" style="margin-left: 1em;">'.VDM_WFM_LOGO.'</a>
-  '.(defined('DEV_MODE') ? VIER_LEER_X_2.'<a href="'.SELF_LINK.'&amp;dev=9" style="font-weight:bold; color:'.CLR_FEHLER.';">'.L_DEV_MODE_OFF_KRZ.'</a>' : '').'</td>
+  '.(defined('DEV_MODE') ? VIER_LEER_X_2.'<a href="'.SELF_LINK.'&amp;dev=9&amp;headPos=fixed" style="font-weight:bold; color:'.CLR_FEHLER.';">'.L_DEV_MODE_OFF_KRZ.'</a>' : '').'</td>
 
     <td style="white-space: nowrap; text-align: center; background-color:'.CLR_HINTGR_HINW.';">'
-            .helpLink('', strong(HILFE_BUCH), '', 1, ' class="headlink"').'</td>
+        .helpLink('', strong(HILFE_BUCH), '', 1, ' class="headlink"').'</td>
 
    <td style="white-space: nowrap; text-align: center; background-color:'.CLR_HINTGR_HINW.';">'
-            .verzLeiste()
-            .'</td>
+        .verzLeiste().'</td>
 
    <td style="white-space: nowrap; text-align: center; background-color:'.CLR_HINTGR_HINW.';">'
-            .($_SESSION['wfm']['v_pfad'].'/' == STANDD_ORT ?
-                icon_anz('home_now') : '<a href="'.SELF_LINK.'&amp;abbr=1&amp;favos=wfm9'.$homeUrl.'" title="'.L_ORDNR_FAVO_HOME.'... ('.$homeUrl
-                .')" class="img_link">'.icon_anz('home').'</a>').'</td>
+    .($_SESSION['wfm']['v_pfad'].'/' == STANDD_ORT ?
+        icon_anz('home_now') : '<a href="'.SELF_LINK.'&amp;abbr=1&amp;favos=wfm9'.$homeUrl.'" title="'.L_ORDNR_FAVO_HOME.'... ('.$homeUrl
+        .')" class="img_link">'.icon_anz('home').'</a>').'</td>
   </tr>
 <!-- Ende Zeile 2 -->
 </table>';
     } else {
-        $wert_html_begin .= '<br><br><br><div style="text-align: center;"><a href="'.SELF_LINK.'" class="headlink">'
+        $wert_html_begin .= '<br><br><br><div style="text-align: center;"><a href="'.base64_decode(A_SHOP_WFM).'" class="headlink">'
             .VDM_WFM_LOGO.'</a></div>';
-        $meldg = null;/* Nicht angemeldet, keine Meldungen ausgeben! */
+        $meldg = '';/* Nicht angemeldet, keine Meldungen ausgeben! */
     }/*ENDE: else ==> if(empty($kopf_ausblenden) || !empty($_SESSION['wfm']['user_now'])) */
     return $wert_html_begin.'
     <div align="center" '.(empty($kopf_ausblenden) ? 'style="'.HEAD_TOP_PLUS.'"' : '').'><noscript>'
@@ -2428,14 +2440,15 @@ function htmlbodyende()
             .(defined('VDM_STOPPUHR_START_ZEIT') ? $wfm_stoppuhr->zeigeVerbrauchteZeit(3, 1) : '') : '').'
   <div style="text-align:center; color: '.CLR_HINWS.'; background-color: '.CLR_HINTGR_HINW.'; vertical-align: middle; padding: 1px 1px 15px 2px;">'
         .txtMarkg(str_replace('###WFM###', L_WFM_WIKIPEDIA, SCHLUSS_SATZ_1).' <a href="'.LINK_FACEBOOK.'" target="_blank" title="zu facebook.com '.DREI_GROESSR.' Facebook-Fan-Site (like it / gef&auml;llt mir ;-) ) ('.L_NEU_FENSTER.')">(facebook)</a>, '
-                  .SCHLUSS_SATZ_2.'<br><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=1024160" title="PayPal ('.L_NEU_FENSTER.')" target="_blank" style="color: '.CLR_HINWS.'; background-color: '.CLR_HINTGR_HINW.';">'
-                  .SCHLUSS_SATZ_4.'<img src="'.SELF_LINK.'&amp;imgFile=KAFFEE_AUSGEBN_203x17&amp;imgDisply=PNG" border="0" hspace="1" alt="DONATE" align="absbottom"></a> - '.L_DANK, NULL, NULL, 'h5').'</div></body></html>';
+                  .SCHLUSS_SATZ_2.'<br><a href="'.base64_decode(A_SHOP_WFM).'" method="get" target="_blank" title="Online-Partner...('.L_NEU_FENSTER.')" style="color: '.CLR_HINWS.'; background-color: '.CLR_HINTGR_HINW.';">'
+                  .SCHLUSS_SATZ_3.'</a> <a href="https://paypal.me/vondy62" title="PayPal ('.L_NEU_FENSTER.')" target="_blank" style="color: '.CLR_HINWS.'; background-color: '.CLR_HINTGR_HINW.';">'
+                  .SCHLUSS_SATZ_4.'<img src="'.SELF_LINK.'&amp;imgFile=KAFFEE_AUSGEBN_203x17&amp;imgDisply=PNG" border="0" hspace="1" alt="DONATE" align="absbottom"></a> - '.L_DANK, '', '', 'h5').'</div></body></html>';
 }/*function htmlbodyende() - HTML-Seiten-Ende in fast jeder Seite */
 if (!empty($_GET['logout'])) {
     echo html_begin($log_ok_meldg).$log_meldg.htmlbodyende(); exit();
 } elseif (!empty($form_fuer_login)) {/*Ausgabe fuer das Login-Feld */
     echo html_begin($log_ok_meldg).$form_fuer_login.htmlbodyende(); exit();
-} elseif (!strpos($log_ok_meldg, '<iframe') === FALSE) {
+} elseif (!strpos($log_ok_meldg, '<iframe') === '') {
     echo html_begin($log_ok_meldg, 'NO')
         .'<br><br><br><br><br>'.$log_ok_meldg
         .'<br><br><br><br><br><br><br><br><br>'
@@ -2447,7 +2460,7 @@ if (!empty($_GET['logout'])) {
     echo html_begin($log_ok_meldg).passwort_aendern().htmlbodyende(); exit();
 } elseif (!empty($_GET['self_umbenennen'])) {
     echo html_begin($log_ok_meldg).wfm_umbenenn_form().htmlbodyende(); exit();
-} elseif (acc_link() != FALSE && (!empty($_GET['accss']) || !empty($_SESSION['wfm']['accss']))) {
+} elseif (acc_link() != '' && (!empty($_GET['accss']) || !empty($_SESSION['wfm']['accss']))) {
     echo html_begin($log_ok_meldg).'<h2>'.ABBR_ZURUECKSETZEN.' | '.helpLink('htaccess', HILF_ZU_THEMA.' "'.HTACCESS_SCHUTZ.'"').'</h2>';
     include_once $_SESSION['wfm']['accss_tool'];
     echo txtMarkg(ABBR_ZURUECKSETZEN).htmlbodyende(); exit();
@@ -2480,9 +2493,9 @@ if (!empty($_GET['logout'])) {
         /*echo 'alles klar'; */
     } elseif (!empty($_GET['wiederherst']) && $_GET['wiederherst'] == 'ende'
         && !empty($_SESSION['wfm']['rename']['files_Pause'])) {
-        $_SESSION['wfm']['rename']['wiederherst'] = NULL;
+        $_SESSION['wfm']['rename']['wiederherst'] = '';
         $_SESSION['wfm']['rename']['files'] = $_SESSION['wfm']['rename']['files_Pause'];
-        $_SESSION['wfm']['rename']['files_Pause'] = NULL;
+        $_SESSION['wfm']['rename']['files_Pause'] = '';
         $_POST['select_action'] = 'file_rename';
         $inhalt_dateien = ren_vorschau();
     } elseif (!empty($_SESSION['wfm']['rename']['files']) && empty($_POST['ren_subm_done'])) {
@@ -2491,7 +2504,7 @@ if (!empty($_GET['logout'])) {
         $inhalt_dateien = '';/*$inhalt_dateien = ren_vorschau(); */
     }
     if (!empty($_POST['ren_subm_view']) && $_POST['ren_subm_view'] == SAVE_EINSTELL) {
-        ren_speicher_inhalt($_POST, NULL);/*Wiederherstellungsdateien ueberschreiben! */
+        ren_speicher_inhalt($_POST, '');/*Wiederherstellungsdateien ueberschreiben! */
         echo txtMarkg(L_ERFOLGRCH.SAVE_EINST_OK, 'hinweis2');
     }
     if (!empty($_POST['select_action']) && $_POST['select_action'] == 'file_rename' && file_exists(rename_save())) {
@@ -2729,7 +2742,7 @@ if (!empty($_GET['logout'])) {
                 $zaehl_ren++;
             }
         }/*foreach () */
-        ren_speicher_inhalt(NULL, $samlg);
+        ren_speicher_inhalt('', $samlg);
         echo txtMarkg(L_UMBENENN_OK.' ('.$zaehl_ren.' '.L_DATEIN.')!
              ('.ABBR_ZURUECKSETZEN.')');
     }/*else ==> if() */
@@ -2750,10 +2763,10 @@ if (!empty($_GET['logout'])) {
     if (!empty($_SESSION['wfm']['such_res'])) {
         echo suchResult();
     } elseif (!empty($_GET['direktVerz'])) {
-        echo '<br><br>'.form_kopf('direktVerz', false, false, false, 'get').'<input type="hidden" name="abbr" value="1">
-       <strong>'.L_VERZ_DIRKT.': </strong><input type="submit" name="go" value="go">
-       <br><input type="text" name="verzns" value="'
-            .$_SESSION['wfm']['v_pfad'].'" style="width:77%;" placeholder="path..." autofocus required'
+        echo '<br><br>'.form_kopf('direktVerz', false, false, false, 'get', ' style="width:44em;"').'<input type="hidden" name="abbr" value="1">
+       <strong>'.L_VERZ_DIRKT.': </strong> &nbsp; <input type="submit" name="go" value="go">
+       <br><input type="text" name="verzns" style="width:100%;" value="'
+            .$_SESSION['wfm']['v_pfad'].'" placeholder="path..." autofocus required'
             .' onfocus="document.direktVerz.verzns.select();"></form><hr>';
         $verz_anlegen_nicht_anzeigen = 1;
         $dateidownload_nicht_anzeigen = 1;
@@ -2780,14 +2793,14 @@ if (!empty($_POST['textspeichern'])
         if (!empty($_POST['trim_end_zeile'])) {
             $zusatzInfo = '<br>('.LEER_ENTFERNT.')</strong>';
             $arrayInhalt = explode(PHP_EOL, $new_txt_inh);
-            $array_new_txt_inh = NULL;
+            $array_new_txt_inh = '';
             foreach ($arrayInhalt as $eineZeile) {
                 $array_new_txt_inh .= rtrim($eineZeile).PHP_EOL;
             }
             $new2_txt_inh = rtrim($array_new_txt_inh);
             /*Alle Leerzeichen am Zeilenende entfernt */
         } else {
-            $zusatzInfo = NULL;
+            $zusatzInfo = '';
             $new2_txt_inh = rtrim($new_txt_inh);
         }
         if ($_POST['textspeichern'] == L_SAVE_AS) {
@@ -2807,7 +2820,7 @@ if (!empty($_POST['textspeichern'])
     $_GET['text_file'] = $_POST['text_file'];
     $GLOBALS['meldSlg'] .= txtMarkg(' '.L_ABBRUCH.': '.EDIT_NOT_IN_ZEILE.$txt_zeil_nr.'! ', 'hinweis2');
 }
-function operations($check_editor=FALSE, $abbr=FALSE, $zahl=1, $minim=NULL)
+function operations($check_editor='', $abbr='', $zahl=1, $minim='')
 {
     return '<input type="submit" name="textspeichern" value="'.L_SAVE.'" style="width: 7em;">
     <span class="bemerkg">'.DREI_LEER.'<label for="l'.$zahl.'save_close">'.L_SAVE.' &amp; '.SCHLIESSN.'</label>
@@ -2822,18 +2835,18 @@ function operations($check_editor=FALSE, $abbr=FALSE, $zahl=1, $minim=NULL)
 }/*function operations() */
 /*ISO-8859-1; ISO-8859-15 */
 function codeNew($inhlt) {
-    $encode = substr(strtolower(CODIERG), 0, 3);
+    $encode = mb_substr(strtolower(CODIERG), 0, 3);
     if ($encode == 'utf') {
-        return utf8_encode($inhlt);
+        return $inhlt;// ehem. utf8_encode($inhlt);
     } elseif ($encode == 'iso') {
         return utf8_decode($inhlt);
     } else {
-        return ($inhlt);
+        return $inhlt;
     }
 }
 function displCharset()/** Zukunftsmusik ;-) */
 {
-    echo 'QQQ'.$encode = substr(strtolower(CODIERG), 0, 3);
+    echo 'QQQ'.$encode = mb_substr(strtolower(CODIERG), 0, 3);
     if ($encode == 'iso') {
         $nextEncode = 'utf-8';
     } elseif ($encode == 'uft') {
@@ -2845,7 +2858,7 @@ function displCharset()/** Zukunftsmusik ;-) */
 }
 if (!empty($_GET['text_file']) && empty($_POST['save_close'])) {
     $last_inputfeld = '';
-    echo (!is_writable($_GET['text_file']) ? txtMarkg(L_ACHTG.DATEI_SCHREIBSCHTZ.'!', 'hinweis2') : NULL);
+    echo (!is_writable($_GET['text_file']) ? txtMarkg(L_ACHTG.DATEI_SCHREIBSCHTZ.'!', 'hinweis2') : '');
     $dat_inhalt = @file($_GET['text_file']);
     $uebrschft = ABBR_BEGINN.VIER_LEER_X_2.L_DATEI.' '.strtolower(L_BEARBTN);
     if ($_SESSION['wfm']['editor'] != 'textarea') {
@@ -2999,7 +3012,7 @@ if (!empty($_SESSION['wfm']['temp_memo']) && is_array($_SESSION['wfm']['temp_mem
        </tr>
      </table>';
     echo versteck_anzeigen(txtMarkg(L_SPEICHR_NAME.': '.$memo_zahl.' '.L_DATEIN.' ('.L_ANZEIGN.')', 'hinweis2', '', 'strong'),
-                           $temp_memo, NULL, NULL, NULL, (!empty($_GET['open'])? 1 : NULL)).'
+                           $temp_memo, '', '', '', (!empty($_GET['open'])? 1 : '')).'
           <br><br>'.PHP_EOL;
 }/*if(!empty($_SESSION['wfm']['temp_memo']) && is_array($_SESSION['wfm']['temp_memo'])) */
 /*END: Zwischenspeicher (Idee: Klemmbrett aus Typo3) */
@@ -3046,16 +3059,15 @@ if (empty($_GET['no_list'])) {
             } else {
                 $formUmbnennen = 0;/*damit die Variable beim naechsten Loop leer ist! */
             }
-            $sprung = $zaehl++.'spr'.substr(md5(dateiNameFiltrn($verzeichnsInhalt)), 0, 11);
+            $sprung = $zaehl++.'spr'.mb_substr(md5(dateiNameFiltrn($verzeichnsInhalt)), 0, 11);
             $sprgLink = (!empty($sp5) ? $sp5 : 'top');
-            $sp5 = (!empty($sp4) ? $sp4 : NULL); $sp4 = (!empty($sp3) ? $sp3 : NULL);
-            $sp3 = (!empty($sp2) ? $sp2 : NULL); $sp2 = (!empty($sp1) ? $sp1 : NULL);
+            $sp5 = (!empty($sp4) ? $sp4 : ''); $sp4 = (!empty($sp3) ? $sp3 : '');
+            $sp3 = (!empty($sp2) ? $sp2 : ''); $sp2 = (!empty($sp1) ? $sp1 : '');
             $sp1 = $sprung;
             if ($dateityp_roh == 'dir') {
                 $zeile_verzeichn .= '<tr id="'.$sprung.'">
                         <th style="text-align:left;white-space: nowrap;" colspan="2">';
-                $link_ordner_wechseln = '<a href="'.SELF_LINK.'&amp;verzns='.urlencode($dateiName).'"
-                                            style="color: '.CLR_FONT_2.';" class="img_link" title="'.WECHSL_ORDNR.'...">';
+                $link_ordner_wechseln = '<a href="'.SELF_LINK.'&amp;verzns='.urlencode($dateiName).'" class="text1_link" title="'.WECHSL_ORDNR.'...">';
                 if(!empty($formUmbnennen)){
                     $zeile_verzeichn .= ''.$formUmbnennen.'</th>';
                 } else {
@@ -3064,8 +3076,8 @@ if (empty($_GET['no_list'])) {
                 $zeile_verzeichn .= '<td align="center" style="color: '.CLR_FONT_2.'; white-space: nowrap;">'.getDateityp($dateityp_roh).'</td>
                    <td align="center" style="color: '.CLR_FONT_2.'; white-space: nowrap;">'
                     .(!empty($_GET['groesse_verz']) && ($_GET['groesse_verz'] == $dateiName || $_GET['groesse_verz'] == 'WFM_SIZE_ALL_FOLDR') ? verz_groesse_anzeigen($dateiName) :
-                        '<a href="'.SELF_LINK.'&amp;groesse_verz='.urlencode($dateiName).'#'.$sprgLink.'" style="color: '.CLR_FONT_2.';" '
-                        .'title="'.L_ORDNER.'-'.L_DIMENSN.' '.L_ERMITTLN.'..." class="img_link">'.L_ERMITTLN.'</a>'
+                        '<a href="'.SELF_LINK.'&amp;groesse_verz='.urlencode($dateiName).'#'.$sprgLink.'" '
+                        .'title="'.L_ORDNER.'-'.L_DIMENSN.' '.L_ERMITTLN.'..." class="text1_link">'.L_ERMITTLN.'</a>'
                     ).'</td>
                    <td align="center" style="color: '.CLR_FONT_2.'; white-space: nowrap;">'.$last_edit.'</td>';
                 if (defined('R_OWNER_SP')) {
@@ -3075,7 +3087,7 @@ if (empty($_GET['no_list'])) {
                    <td align="center" style="white-space: nowrap;">'
                     .$link_ordner_wechseln.icon_anz('folder_open').'</a>'
                     .'&nbsp;|&nbsp;'.icon_anz('space')
-                    .'&nbsp;|&nbsp;'.(acc_link() != FALSE ? acc_link('gif', $verzeichnsInhalt) : icon_anz('space'))
+                    .'&nbsp;|&nbsp;'.(acc_link() != '' ? acc_link('gif', $verzeichnsInhalt) : icon_anz('space'))
                     .'&nbsp;|&nbsp;'.icon_anz('space')
                     .'&nbsp;|&nbsp;'.umbenennen_link($verzeichnsInhalt, icon_anz('rename'), L_ORDNER, $sprgLink)
                     .'&nbsp;|&nbsp;'.(count(glob($dateiName.'/*')) > 0 ?
@@ -3125,7 +3137,7 @@ if (empty($_GET['no_list'])) {
                             .'<br><br>'.L_ANZEIGN.': <a href="'.SELF_LINK.'&amp;imgFile='.urlencode($dateiName).'" '
                             .'title="'.$bild_info[2].'-'.L_ANZEIGN.': '.$verzeichnsInhalt.')">'
                             .strong($verzeichnsInhalt).'</a>... '
-                            .txtMarkg(helpLink('img_einb_abgebr', L_HANDBUCH, NULL, 1), '', '', 'h4');
+                            .txtMarkg(helpLink('img_einb_abgebr', L_HANDBUCH, '', 1), '', '', 'h4');
                     }
                     $ansicht_o_a = versteck_anzeigen('<span title="'.L_PIXL.'-'.L_DIMENSN.': '.L_DIMENS_XY.'">'
                                                      .$bild_info[0].' x '.$bild_info[1].'</span>', $img_verstecken, '', '', '#'.$sprgLink);
@@ -3133,7 +3145,7 @@ if (empty($_GET['no_list'])) {
                     if (!$datei_ext = strrchr($dateiName, '.')) {
                         $datei_ext = '??';
                     }
-                    $datei_ext = substr(strtoupper($datei_ext), 1);
+                    $datei_ext = mb_substr(strtoupper($datei_ext), 1);
                     $dateitypchen = getDateityp($dateityp_roh).' ('.$datei_ext.')';
                     if (is_binary(strtolower($datei_ext)) === TRUE) {
                         $linkErstelln = binary_anzeig_link($verzeichnsInhalt, $dateiName, $verzeichnsInhalt)
@@ -3157,7 +3169,7 @@ if (empty($_GET['no_list'])) {
                     /*link bedeutet Verknuepfung (kein Download moeglich) */
                     $zeile_dateien .= $dateitypchen;
                 } else {
-                    $zeile_dateien .= download_link($verzeichnsInhalt, $dateiName, $dateitypchen);
+                    $zeile_dateien .= download_link($verzeichnsInhalt, $dateiName, $dateitypchen, 'text1_link');
                 }
                 $zeile_dateien .= '</td>
                     <td align="center" style="white-space: nowrap;">
@@ -3201,7 +3213,7 @@ if (empty($_GET['no_list'])) {
 echo '</form>';
 if (empty($_GET['ordner']) && empty($dateidownload_nicht_anzeigen)) {
     if (!empty($_GET['filefelder']) && $_GET['filefelder'] > 0) {
-        $filefelder = intval($_GET['filefelder']); $verz_anlegen_nicht_anzeigen = 1;
+        $filefelder = (int)($_GET['filefelder']); $verz_anlegen_nicht_anzeigen = 1;
         echo '<fieldset><legend>'.DATEI_UPLOAD_TITEL.' ('.$_SESSION['wfm']['v_pfad'].'):</legend>';
         $fieldset_ende = '</fieldset>';
     }
@@ -3210,7 +3222,7 @@ if (empty($_GET['ordner']) && empty($dateidownload_nicht_anzeigen)) {
   <label for="linkUpload">'.DATEI_UPLOAD_FLDR.':</label> '
         .'<a title="'.DATEI_UPLOAD_MEHRERE.'" href="'.upload_link(1).'</a>,&nbsp;<a href="'.upload_link(5).'</a>,&nbsp;'
         .'<a href="'.upload_link(10).'</a>,&nbsp;'.'<a href="'.upload_link(15, '', '&amp;no_list=1').'</a>,&nbsp;'
-        .'<a href="'.upload_link(20, '', '&amp;no_list=1').'</a>'.VIER_LEER_X_2.helpLink('fileupload', NULL, NULL, 1);
+        .'<a href="'.upload_link(20, '', '&amp;no_list=1').'</a>'.VIER_LEER_X_2.helpLink('fileupload', '', '', 1);
     $upload_button = '<input type="submit" name="dateiupload" value="'.DATEI_UPLOAD_SAVE.'" style="color: '.CLR_HINWS.'; background-color: '.CLR_HINTGR_HINW.';">';
     if (!empty($filefelder) && ($filefelder > 1 && $filefelder < 30)) {
         echo '<br>'.PHP_EOL;
@@ -3224,9 +3236,9 @@ if (empty($_GET['ordner']) && empty($dateidownload_nicht_anzeigen)) {
             .' title="'.DATEI_UPLOAD_MEHRERE.'" required>&nbsp;'.$upload_button.'</form>'.PHP_EOL.(!empty($fieldset_ende) ?
                 txtMarkg($hinwDatei, '', '', 'h3').$fieldset_ende : strong($hinwDatei));
     }
-}/*if(!empty($_GET['ordner']) && $_GET['ordner'] == 'neu') */
+}/*if(empty($_GET['ordner']) && $_GET['ordner'] == 'neu') */
 if (empty($verz_anlegen_nicht_anzeigen)) {
-    $hilfe = helpLink('newfolder', NULL, NULL, 1); $hinw_ver = L_ORDNR_NEW_LABL.' '.Z_BSPL.'"'.BSP_ORDNR.'"';
+    $hilfe = helpLink('newfolder', '', '', 1); $hinw_ver = L_ORDNR_NEW_LABL.' '.Z_BSPL.'"'.BSP_ORDNR.'"';
     echo (empty($_GET['ordner']) ? '<hr><br>' : '')
         .'<script type="text/javascript"> function ordnerAnlegen() {
             x = document.verz_erstellen.make_verz.value;
